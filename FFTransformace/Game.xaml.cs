@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -14,6 +15,7 @@ namespace FFTransformace
         private Rectangle[,] _rectangles;
         private readonly MainWindow _mainWindow;
         private readonly int[,] _maze;
+        private MyPoint _currentPos;
 
         public Game(MainWindow mainWindow)
         {
@@ -22,8 +24,9 @@ namespace FFTransformace
             Closed += WindowClosing;
             _rectangles = new Rectangle[Size, Size];
 
-            Generator generator = new Generator(Size);
+            var generator = new Generator(Size);
             _maze = generator.Generate();
+            _currentPos = new MyPoint(1, 1);
 
             for (var i = 0; i < Size; i++)
             {
@@ -36,7 +39,7 @@ namespace FFTransformace
             {
                 _rectangles[x, y] = new Rectangle()
                 {
-                    Fill = _maze[x,y] == 1 ? Brushes.Black : Brushes.DodgerBlue,
+                    Fill = _maze[x,y] == 1 ? Brushes.Black :(x == _currentPos.X && y == _currentPos.Y) ? Brushes.Yellow : Brushes.DodgerBlue,
                     Margin = new Thickness(1,1,1,1)
                 };
                 _rectangles[x,y].SetValue(Grid.RowProperty, x);
@@ -51,12 +54,42 @@ namespace FFTransformace
 
         private void TimerOnTick(object sender, EventArgs e)
         {
-            Title = _mainWindow.Current.ToString();
+            var currentFrequency = _mainWindow.Current;
+            _rectangles[_currentPos.X, _currentPos.Y].Fill = Brushes.DodgerBlue;
+            if (Enumerable.Range(1000, 1250).Contains(currentFrequency)) // ➡
+            {
+                
+            }
+            else if (Enumerable.Range(1250, 1500).Contains(currentFrequency)) // ⬇
+            {
+                
+            }
+            else if (Enumerable.Range(1500, 1750).Contains(currentFrequency)) // ⬅
+            {
+                
+            }
+            else if (Enumerable.Range(1750, 2000).Contains(currentFrequency)) // ⬆
+            {
+                
+            }
+
+            _rectangles[_currentPos.X, _currentPos.Y].Fill = Brushes.Yellow;
         }
 
         private void WindowClosing(object sender, EventArgs e)
         {
             _mainWindow.Close();
         }
+    }
+
+    struct MyPoint
+    {
+        public MyPoint(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }
