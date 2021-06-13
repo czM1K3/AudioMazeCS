@@ -102,6 +102,11 @@ namespace FFTransformace
                         LbMaxFrekvence.Content = f;
                         Current = f;
                     }
+                    else
+                    {
+                        LbMaxFrekvence.Content = 0;
+                        Current = 0;
+                    }
                 }
 
                 OutputFFT.Add(outputData);

@@ -39,7 +39,7 @@ namespace FFTransformace
             {
                 _rectangles[x, y] = new Rectangle()
                 {
-                    Fill = _maze[x,y] == 1 ? Brushes.Black :(x == _currentPos.X && y == _currentPos.Y) ? Brushes.Yellow : Brushes.DodgerBlue,
+                    Fill = _maze[x,y] == 1 ? Brushes.Black :(x == _currentPos.X && y == _currentPos.Y) ? Brushes.Yellow : (x == Size - 2 && y == Size - 2) ? Brushes.Green : Brushes.DodgerBlue,
                     Margin = new Thickness(1,1,1,1)
                 };
                 _rectangles[x,y].SetValue(Grid.RowProperty, x);
@@ -47,7 +47,7 @@ namespace FFTransformace
                 grid.Children.Add(_rectangles[x, y]);
             }
 
-            var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 0, 0, 100)};
+            var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 0, 0, 200)};
             timer.Tick += TimerOnTick;
             timer.Start();
         }
@@ -55,25 +55,33 @@ namespace FFTransformace
         private void TimerOnTick(object sender, EventArgs e)
         {
             var currentFrequency = _mainWindow.Current;
+            if (!Enumerable.Range(1000, 1000).Contains(currentFrequency)) return;
             _rectangles[_currentPos.X, _currentPos.Y].Fill = Brushes.DodgerBlue;
-            if (Enumerable.Range(1000, 1250).Contains(currentFrequency)) // ➡
+            
+            if (Enumerable.Range(1000, 250).Contains(currentFrequency) && _maze[_currentPos.X, _currentPos.Y + 1] == 0) // ➡
             {
-                
+                _currentPos = new MyPoint(_currentPos.X, _currentPos.Y + 1);
             }
-            else if (Enumerable.Range(1250, 1500).Contains(currentFrequency)) // ⬇
+            else if (Enumerable.Range(1250, 250).Contains(currentFrequency) && _maze[_currentPos.X + 1, _currentPos.Y] == 0) // ⬇
             {
-                
+                _currentPos = new MyPoint(_currentPos.X + 1, _currentPos.Y);
             }
-            else if (Enumerable.Range(1500, 1750).Contains(currentFrequency)) // ⬅
+            else if (Enumerable.Range(1500, 250).Contains(currentFrequency) && _maze[_currentPos.X, _currentPos.Y - 1] == 0) // ⬅
             {
-                
+                _currentPos = new MyPoint(_currentPos.X, _currentPos.Y - 1);
             }
-            else if (Enumerable.Range(1750, 2000).Contains(currentFrequency)) // ⬆
+            else if (Enumerable.Range(1750, 250).Contains(currentFrequency) && _maze[_currentPos.X - 1, _currentPos.Y] == 0) // ⬆
             {
-                
+                _currentPos = new MyPoint(_currentPos.X - 1, _currentPos.Y);
             }
 
             _rectangles[_currentPos.X, _currentPos.Y].Fill = Brushes.Yellow;
+
+            if (_currentPos.X == Size - 2 && _currentPos.Y == Size - 2)
+            {
+                _mainWindow.Close();
+                Close();
+            }
         }
 
         private void WindowClosing(object sender, EventArgs e)
