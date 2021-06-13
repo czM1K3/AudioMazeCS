@@ -33,21 +33,23 @@ namespace FFTransformace
                 grid.ColumnDefinitions.Add(new ColumnDefinition());
                 grid.RowDefinitions.Add(new RowDefinition());
             }
-            
+
             for (var x = 0; x < Size; x++)
             for (var y = 0; y < Size; y++)
             {
                 _rectangles[x, y] = new Rectangle()
                 {
-                    Fill = _maze[x,y] == 1 ? Brushes.Black :(x == _currentPos.X && y == _currentPos.Y) ? Brushes.Yellow : (x == Size - 2 && y == Size - 2) ? Brushes.Green : Brushes.DodgerBlue,
-                    Margin = new Thickness(1,1,1,1)
+                    Fill = _maze[x, y] == 1 ? Brushes.Black :
+                        (x == _currentPos.X && y == _currentPos.Y) ? Brushes.Yellow :
+                        (x == Size - 2 && y == Size - 2) ? Brushes.Green : Brushes.DodgerBlue,
+                    Margin = new Thickness(1, 1, 1, 1)
                 };
-                _rectangles[x,y].SetValue(Grid.RowProperty, x);
-                _rectangles[x,y].SetValue(Grid.ColumnProperty, y);
+                _rectangles[x, y].SetValue(Grid.RowProperty, x);
+                _rectangles[x, y].SetValue(Grid.ColumnProperty, y);
                 grid.Children.Add(_rectangles[x, y]);
             }
 
-            var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 0, 0, 200)};
+            var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 0, 0, 150)};
             timer.Tick += TimerOnTick;
             timer.Start();
         }
@@ -58,30 +60,32 @@ namespace FFTransformace
             if (!Enumerable.Range(1000, 1000).Contains(currentFrequency)) return;
             _rectangles[_currentPos.X, _currentPos.Y].Fill = Brushes.DodgerBlue;
             
-            if (Enumerable.Range(1000, 250).Contains(currentFrequency) && _maze[_currentPos.X, _currentPos.Y + 1] == 0) // ➡
-            {
+            // ➡
+            if (Enumerable.Range(1000, 250).Contains(currentFrequency) &&
+                _maze[_currentPos.X, _currentPos.Y + 1] == 0)
                 _currentPos = new MyPoint(_currentPos.X, _currentPos.Y + 1);
-            }
-            else if (Enumerable.Range(1250, 250).Contains(currentFrequency) && _maze[_currentPos.X + 1, _currentPos.Y] == 0) // ⬇
-            {
+
+            // ⬇
+            else if (Enumerable.Range(1250, 250).Contains(currentFrequency) &&
+                     _maze[_currentPos.X + 1, _currentPos.Y] == 0)
                 _currentPos = new MyPoint(_currentPos.X + 1, _currentPos.Y);
-            }
-            else if (Enumerable.Range(1500, 250).Contains(currentFrequency) && _maze[_currentPos.X, _currentPos.Y - 1] == 0) // ⬅
-            {
+
+            // ⬅
+            else if (Enumerable.Range(1500, 250).Contains(currentFrequency) &&
+                     _maze[_currentPos.X, _currentPos.Y - 1] == 0)
                 _currentPos = new MyPoint(_currentPos.X, _currentPos.Y - 1);
-            }
-            else if (Enumerable.Range(1750, 250).Contains(currentFrequency) && _maze[_currentPos.X - 1, _currentPos.Y] == 0) // ⬆
-            {
+
+            // ⬆
+            else if (Enumerable.Range(1750, 250).Contains(currentFrequency) &&
+                     _maze[_currentPos.X - 1, _currentPos.Y] == 0)
                 _currentPos = new MyPoint(_currentPos.X - 1, _currentPos.Y);
-            }
+
 
             _rectangles[_currentPos.X, _currentPos.Y].Fill = Brushes.Yellow;
 
-            if (_currentPos.X == Size - 2 && _currentPos.Y == Size - 2)
-            {
-                _mainWindow.Close();
-                Close();
-            }
+            if (_currentPos.X != Size - 2 || _currentPos.Y != Size - 2) return;
+            _mainWindow.Close();
+            Close();
         }
 
         private void WindowClosing(object sender, EventArgs e)
@@ -97,6 +101,7 @@ namespace FFTransformace
             X = x;
             Y = y;
         }
+
         public int X { get; set; }
         public int Y { get; set; }
     }
